@@ -1,0 +1,9 @@
+# Large binary image files (Upload via GitHub Releases instead of git push)
+kas-pos-images.tar.gz
+*.tar
+*.tar.gz
+*.part*
+
+# Local database backups
+backups/
+*.sql

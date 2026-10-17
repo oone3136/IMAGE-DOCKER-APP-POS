@@ -1,0 +1,224 @@
+_format_version: "3.0"
+
+services:
+  # Standalone POS & Retail Store Microservice
+  - name: pos-service
+    url: http://pos:8081
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: pos-route
+        paths:
+          - /api/v1/pos
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+
+  # Common Accounting & Company Microservice
+  - name: common-service
+    url: http://common:8080
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      # Route untuk Profil Perusahaan (PT/CV/Toko) & Karyawan
+      - name: companies-route
+        paths:
+          - /api/v1/companies
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+
+      # Route untuk Buku Kas Harian
+      - name: cash-book-route
+        paths:
+          - /api/v1/cash-book
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+
+      # Route untuk Perhitungan Keuangan (Bulanan, Rugi Laba, Neraca)
+      - name: reports-route
+        paths:
+          - /api/v1/reports
+        strip_path: false
+        methods:
+          - GET
+          - OPTIONS
+
+      # Route untuk Buku Besar & Jurnal
+      - name: general-ledger-route
+        paths:
+          - /api/v1/general-ledger
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - OPTIONS
+
+      # Route untuk Bagan Akun (Chart of Accounts)
+      - name: accounts-route
+        paths:
+          - /api/v1/accounts
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+
+      # Route untuk Manajemen & Perhitungan Aset
+      - name: assets-route
+        paths:
+          - /api/v1/assets
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+
+      # Route untuk ERP (Suppliers, Purchase Orders, Payroll)
+      - name: erp-route
+        paths:
+          - /api/v1/erp
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+          - OPTIONS
+
+      # Route untuk Auth & Redis Token Management
+      - name: auth-route
+        paths:
+          - /api/v1/auth
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - DELETE
+          - OPTIONS
+
+
+      # Route untuk Health Check upstream Kong
+      - name: health-route
+        paths:
+          - /api/v1/health
+        strip_path: false
+        methods:
+          - GET
+
+      # Route untuk Swagger UI & OpenAPI docs
+      - name: swagger-route
+        paths:
+          - /q/swagger-ui
+          - /q/openapi
+        strip_path: false
+        methods:
+          - GET
+
+  # Standalone DCMS & Notification Microservice
+  - name: dcms-service
+    url: http://dcms:8082
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      # Route untuk DCMS Documents & Gold Documentation
+      - name: dcms-route
+        paths:
+          - /api/v1/dcms
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+
+      # Route untuk Notification Service (In-App, WA Debt Reminder)
+      - name: notifications-route
+        paths:
+          - /api/v1/notifications
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - OPTIONS
+
+  # Standalone Centralized Logging & Audit Microservice
+  - name: logging-service
+    url: http://logging:8083
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: logs-route
+        paths:
+          - /api/v1/logs
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - OPTIONS
+
+  # Standalone Master Data Management & Theming Microservice
+  - name: master-service
+    url: http://master:8084
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: master-route
+        paths:
+          - /api/v1/master
+        strip_path: false
+        methods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+          - OPTIONS
+
+# Global Plugins
+plugins:
+  - name: cors
+    config:
+      origins:
+        - "*"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+      headers:
+        - Accept
+        - Authorization
+        - Content-Type
+        - X-Requested-With
+        - X-User-Id
+        - X-Company-Id
+      credentials: true
+      max_age: 3600
